@@ -17,9 +17,15 @@ import java.util.concurrent.atomic.AtomicLong;
  * For reading/saving an array (a hash map) of objects from/into a file
  *
  * The class T (that must implements Serializable) must extends Id
- * So in the constructor of the class T (for a new object) must be:
- * 		setId( HashMapFileManager<T>.getNewId() );
- *		setId( HashMapFileManager.<Place>getNewId() );
+ *
+ * MANAGE IT:
+ *		- insert an static var of this class in the class T:
+ * 			public static final HashMapFileManager<T> dataManager = new HashMapFileManager<>(
+ * 				getApplicationContext(), "T.data", "last_id_T.data"
+ * 			);
+ *
+ *		- in the constructor of the class T (for a new object) must be:
+ *			setId( dataManager.getNewId() );
  *
  * @param <T extends Id>
  */
@@ -27,9 +33,9 @@ public class HashMapFileManager<T extends Id> {
 	private String fileName = "";
 	private HashMap<Long, T> mapValues = new HashMap<>();
 
-	// Incremental
-	private static String _fileNameForId = "";
-	private static AtomicLong _lastId = new AtomicLong(0 );
+	// Incremental. NOTE that this can NOT be static, BECAUSE IN JAVA all static vars are in all template types T of a class<T>
+	private String fileNameForId = "";
+	private AtomicLong lastId = new AtomicLong(0 );
 
 	// Reader
 	private FileInputStream fis;
@@ -44,37 +50,38 @@ public class HashMapFileManager<T extends Id> {
 	public HashMapFileManager( Context context, String fileName, String fileNameForId ){
 		this.context = context;
 		this.fileName = fileName;
-		_fileNameForId = fileNameForId;
+		this.fileNameForId = fileNameForId;
 	}
 
+	public void setContext( Context context ){ this.context = context; }
 	public HashMap<Long, T> get(){ return mapValues; }
 
-	public static long getNewId(){ return _lastId.getAndIncrement(); }
+	public long getNewId(){ return lastId.getAndIncrement(); }
 
 	//----------------------------------------------------------------------------------------------
-	private static void readLastId(){
-		long lastId = 0;
+	private void readLastId(){
+		long _lastId = 0;
 		byte[] bytes = new byte[ Long.BYTES ];
 		try {
-			FileInputStream fisId = new FileInputStream( _fileNameForId );
+			FileInputStream fisId = new FileInputStream( fileNameForId );
 			fisId.read( bytes );
 			fisId.close();
-			lastId = BytesManager.toLong( bytes );
+			_lastId = BytesManager.toLong( bytes );
 		} catch( FileNotFoundException e ) {
-			Log.i( "File read", "The file '" + _fileNameForId + "' must be created" );
+			Log.i( "File read", "The file '" + fileNameForId + "' must be created" );
 			// Using default = 0 = starting value
 		} catch( Exception e ){
 			e.printStackTrace();
 		}
-		_lastId.set( lastId );
+		lastId.set( _lastId );
 	}
-	private static void writeLastId(){
+	private void writeLastId(){
 		try {
-			FileOutputStream fosId = new FileOutputStream( _fileNameForId, false );
-			fosId.write( BytesManager.toByteArray( _lastId.get() ) );
+			FileOutputStream fosId = new FileOutputStream( fileNameForId, false );
+			fosId.write( BytesManager.toByteArray( lastId.get() ) );
 			fosId.close();
 		} catch( Exception e ){
-			Log.i( "File write", "The file '" + _fileNameForId + "' can not be created" );
+			Log.i( "File write", "The file '" + fileNameForId + "' can not be created" );
 			e.printStackTrace();
 		}
 	}

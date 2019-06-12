@@ -73,20 +73,20 @@ public class DMS {
 		return( degrees + minutes / (double)60 + seconds / (double)3600 );
 	}
 
-	public static double degreesToRadians( double degrees ){ return Constants.R_2PI_360 * degrees; }
-	public static double radiansToDegrees( double radians ){ return Constants.R_360_2PI * radians; }
+	public static double degreesToRadians( double degrees ){ return Constants.M_2PI_360 * degrees; }
+	public static double radiansToDegrees( double radians ){ return Constants.M_360_2PI * radians; }
 	// Rotate from an angle to another angle both given in (-Pi, Pi] limited by a max rotation (> 0)
 	public static double maxRotationForRotateTo( double angle, double angle_from, double max_radians ){
 		double rot = angle - angle_from;
 		if( rot < 0.0 ){
-			if( rot < -Constants.R_PI ){
-				rot = Constants.R_2PI + rot; // > 0
+			if( rot < -Constants.M_PI ){
+				rot = Constants.M_2PI + rot; // > 0
 				return rot > max_radians ? max_radians : rot;
 			}
 			return -rot > max_radians ? -max_radians : rot;
 		}
-		if( rot > Constants.R_PI ){
-			rot = rot - Constants.R_2PI; // < 0
+		if( rot > Constants.M_PI ){
+			rot = rot - Constants.M_2PI; // < 0
 			return -rot > max_radians ? -max_radians : rot;
 		}
 		return rot > max_radians ? max_radians : rot;
