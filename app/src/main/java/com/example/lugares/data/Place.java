@@ -1,5 +1,7 @@
 package com.example.lugares.data;
 
+import android.util.Log;
+
 import com.example.lugares.helpers.system.HashMapFileManager;
 import com.example.lugares.helpers.system.Id;
 import com.google.android.gms.maps.model.LatLng;
@@ -15,12 +17,12 @@ public class Place extends Id implements Serializable {
 	private String description = "";
 	private double latitude = 0;
 	private double longitude = 0;
-	private int valoration = 5;	// 1 - 5
+	private float valoration = 5;	// 1 - 5
 
 	public Place(){
 		id = dataManager.getNewId();
 	}
-	public Place( String name, String description, double latitude, double longitude, int valoration ){
+	public Place( String name, String description, double latitude, double longitude, float valoration ){
 		this();
 		this.name = name;
 		this.description = description;
@@ -28,7 +30,7 @@ public class Place extends Id implements Serializable {
 		this.longitude = longitude;
 		this.valoration = valoration;
 	}
-	public Place( long id, String name, String description, double latitude, double longitude, int valoration ){
+	public Place( long id, String name, String description, double latitude, double longitude, float valoration ){
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -78,11 +80,11 @@ public class Place extends Id implements Serializable {
 		this.longitude = longitude;
 	}
 
-	public int getValoration() {
+	public float getValoration() {
 		return valoration;
 	}
 
-	public void setValoration(int valoration) {
+	public void setValoration( float valoration ) {
 		this.valoration = valoration;
 	}
 }

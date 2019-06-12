@@ -1,6 +1,8 @@
 package com.example.lugares.helpers.system;
 
-public class Id {
+import java.io.Serializable;
+
+public class Id implements Serializable {
 	protected long id = 0;
 	public Id(){}
 	public Id( long id ){

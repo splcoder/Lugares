@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".activities.SetPlaceDataActivity">
+
+	<EditText
+		android:id="@+id/txtName"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="8dp"
+		android:layout_marginTop="32dp"
+		android:layout_marginEnd="8dp"
+		android:ems="10"
+		android:gravity="center_horizontal"
+		android:hint="Set its name"
+		android:textSize="24sp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<EditText
+		android:id="@+id/txtDescription"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="32dp"
+		android:ems="10"
+		android:gravity="center_horizontal"
+		android:hint="Set a description"
+		android:textSize="24sp"
+		app:layout_constraintEnd_toEndOf="@+id/rbValoration"
+		app:layout_constraintStart_toStartOf="@+id/rbValoration"
+		app:layout_constraintTop_toBottomOf="@+id/rbValoration" />
+
+	<RatingBar
+		android:id="@+id/rbValoration"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="32dp"
+		app:layout_constraintEnd_toEndOf="@+id/txtName"
+		app:layout_constraintHorizontal_bias="0.478"
+		app:layout_constraintStart_toStartOf="@+id/txtName"
+		app:layout_constraintTop_toBottomOf="@+id/txtName" />
+
+	<Button
+		android:id="@+id/btnCreate"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="60dp"
+		android:layout_marginTop="164dp"
+		android:layout_marginEnd="8dp"
+		android:text="Create"
+		android:textAllCaps="false"
+		android:textSize="24sp"
+		app:layout_constraintEnd_toStartOf="@+id/btnCancel"
+		app:layout_constraintHorizontal_bias="0.028"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/txtDescription" />
+
+	<Button
+		android:id="@+id/btnCancel"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="164dp"
+		android:layout_marginEnd="60dp"
+		android:text="Cancel"
+		android:textAllCaps="false"
+		android:textSize="24sp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/txtDescription" />
+
+	<android.support.constraint.Guideline
+		android:id="@+id/guideline3"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		app:layout_constraintGuide_begin="210dp" />
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,78 @@
+package com.example.lugares.adapters;
+
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.RatingBar;
+import android.widget.TextView;
+
+import com.example.lugares.R;
+import com.example.lugares.data.Place;
+
+import java.util.ArrayList;
+
+public class ListPlacesAdapter extends ArrayAdapter<Place> {
+	private ArrayList<Place> listPlaces;
+	private Context context;
+	private int lastPosition = -1;
+
+	public ListPlacesAdapter( Context context, ArrayList<Place> listPlaces ){
+		super( context, R.layout.activity_list_places, listPlaces );
+		this.listPlaces = listPlaces;
+		this.context = context;
+	}
+
+	@Override
+	public View getView( int position, View convertView, ViewGroup parent ){
+		// Get the data item for this position
+		Place place = getItem( position );
+		// Check if an existing view is being reused, otherwise inflate the view
+		if( convertView == null ){
+			convertView = LayoutInflater.from( getContext() ).inflate( R.layout.item_place, parent,false );
+		}
+		// Lookup view for data population
+		TextView txtName = (TextView)convertView.findViewById( R.id.txtName );
+		TextView txtDescription = (TextView)convertView.findViewById( R.id.txtDescription );
+		RatingBar rbValoration = (RatingBar)convertView.findViewById( R.id.rbValoration );
+
+		// TODO background color
+		//txtName.setBackgroundTintList( this.context.getResources().getColorStateList( R.color. ) );
+		// Populate the data into the template view using the data object
+		txtName.setText( place.getName() );
+		//txtName.setText( place.getName() + ": " + place.getId() );
+		txtDescription.setText( place.getDescription() );
+
+		rbValoration.setNumStars( 5 );
+		rbValoration.setRating( place.getValoration() );
+		rbValoration.setIsIndicator( true );	// Fix
+		switch( (int)place.getValoration() ){
+			case 1: {
+				//imageView.setImageResource( R.drawable.ic_note_green );
+				txtName.setTextColor( ContextCompat.getColor( context, R.color.black ) );
+				break;
+			}
+			case 2: {
+				txtName.setTextColor( ContextCompat.getColor( context, R.color.blue ) );
+				break;
+			}
+			case 3: {
+				txtName.setTextColor( ContextCompat.getColor( context, R.color.green ) );
+				break;
+			}
+			case 4: {
+				txtName.setTextColor( ContextCompat.getColor( context, R.color.orange ) );
+				break;
+			}
+			case 5: {
+				txtName.setTextColor( ContextCompat.getColor( context, R.color.red ) );
+				break;
+			}
+		}
+		// Return the completed view to render on screen
+		return convertView;
+	}
+
+}

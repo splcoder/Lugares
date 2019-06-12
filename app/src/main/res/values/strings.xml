@@ -1,3 +1,10 @@
 <resources>
 	<string name="app_name">Lugares</string>
+	<string name="location_permission_denied">Permiso de localización denegado</string>
+	<string name="location_permission_required_toast">Permisos de localización requeridos</string>
+	<string name="location_permission_rationale">Se necessitan los permisos de localización</string>
+	<string name="title_activity_select_place_in_map">Map</string>
+	<string name="title_activity_select_place">Map</string>
+	<string name="title_activity_select_your_place">Map</string>
+	<string name="title_activity_street">Map</string>
 </resources>

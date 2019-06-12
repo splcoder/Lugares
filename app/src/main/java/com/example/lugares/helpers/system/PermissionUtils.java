@@ -11,7 +11,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.spl.helpers.R;
+import com.example.lugares.R;
 
 /**
  * Utility class for access to runtime permissions.

@@ -63,21 +63,27 @@ public class HashMapFileManager<T extends Id> {
 		long _lastId = 0;
 		byte[] bytes = new byte[ Long.BYTES ];
 		try {
-			FileInputStream fisId = new FileInputStream( fileNameForId );
+			//FileInputStream fisId = new FileInputStream( fileNameForId );
+			// Android
+			FileInputStream fisId = context.openFileInput( fileNameForId );
 			fisId.read( bytes );
 			fisId.close();
 			_lastId = BytesManager.toLong( bytes );
+			Log.e( "LastId", "" + _lastId );
 		} catch( FileNotFoundException e ) {
-			Log.i( "File read", "The file '" + fileNameForId + "' must be created" );
+			Log.e( "File read", "The file '" + fileNameForId + "' must be created" );
 			// Using default = 0 = starting value
 		} catch( Exception e ){
 			e.printStackTrace();
 		}
 		lastId.set( _lastId );
+		Log.e( "LastIdGood", "" + lastId.get() );
 	}
 	private void writeLastId(){
 		try {
-			FileOutputStream fosId = new FileOutputStream( fileNameForId, false );
+			//FileOutputStream fosId = new FileOutputStream( fileNameForId, false );
+			// Android
+			FileOutputStream fosId = context.openFileOutput( fileNameForId, Context.MODE_PRIVATE );
 			fosId.write( BytesManager.toByteArray( lastId.get() ) );
 			fosId.close();
 		} catch( Exception e ){
@@ -130,8 +136,8 @@ public class HashMapFileManager<T extends Id> {
 	}
 	public HashMap<Long, T> readAll(){ return readAll( true ); }
 
-	public void writeAll( boolean read_last_id ){
-		if( read_last_id )		writeLastId();
+	public void writeAll( boolean save_last_id ){
+		if( save_last_id )		writeLastId();
 		//----------------------------------------
 		try{
 			//fos = new FileOutputStream( fileName, false );
