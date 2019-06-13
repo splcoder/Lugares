@@ -8,4 +8,6 @@ public class CacheKeys {
 	public static final String PLACE_SELECTED		= "place_selected";
 	public static final String MODIFY_PLACE			= "modPlace";
 	public static final String ALL_PLACES_EQUAL		= "allPlacesEqual";
+	public static final String ADD_PLACE			= "add_place";
+	public static final String ZOOM_PLACE			= "zoom_place";
 }

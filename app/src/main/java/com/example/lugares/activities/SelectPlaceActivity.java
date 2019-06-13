@@ -36,8 +36,10 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 	Marker markerSelected = null;
 	LatLng latLngSelected = null;
 
+	boolean addPlace = false;
 	boolean onlyShowMarkers = false;
 	boolean allPlacesEqual = false;
+	boolean zoomPlace = false;
 	Place fixedPlace = null;
 
 	@SuppressLint("RestrictedApi")
@@ -67,6 +69,8 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 				.findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this );
 
+		addPlace = Cache.delBoolean( CacheKeys.ADD_PLACE, false );		// get and del
+		zoomPlace = Cache.delBoolean( CacheKeys.ZOOM_PLACE, false );	// get and del
 		listPlacesActivity = (ListPlacesActivity)Cache.get( CacheKeys.LIST_PLACES_ACTIVITY );
 		onlyShowMarkers = Cache.getBoolean( CacheKeys.ONLY_SHOW_MARKERS, false );
 		if( onlyShowMarkers ){
@@ -115,13 +119,16 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 					.snippet( place.getDescription() )
 					//.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) )
 			);
-			if( ! allPlacesEqual && fixedPlace != null && fixedPlace.getId() == place.getId() )
-					marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_ORANGE ) );
+			if( ! addPlace && ! allPlacesEqual && fixedPlace != null && fixedPlace.getId() == place.getId() ){
+				marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_ORANGE ) );
+				marker.showInfoWindow();
+			}
 			else	marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
 		}
 
 		if( fixedPlace != null ){
-			if( onlyShowMarkers )
+			// TODO zoomPlace
+			if( onlyShowMarkers || addPlace )
 					mMap.animateCamera( CameraUpdateFactory.newLatLng( fixedPlace.getLatLong() ) );
 			else	mMap.animateCamera( CameraUpdateFactory.newLatLngZoom( fixedPlace.getLatLong(), 13.0f ) );
 			// Clean
@@ -137,7 +144,7 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 	@Override
 	public void onMapClick(LatLng latLng) {
 		//Toasty.info( getApplicationContext(), "Clicked on map", Toast.LENGTH_SHORT, true ).show();
-		if( ! onlyShowMarkers ){
+		if( addPlace ){
 			if( markerSelected != null )	markerSelected.remove();
 			markerSelected = mMap.addMarker( new MarkerOptions()
 					.position( latLng )

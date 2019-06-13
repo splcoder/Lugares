@@ -79,6 +79,7 @@ public class ListPlacesActivity extends AppCompatActivity implements AdapterView
 			public void onClick(View v) {
 				//Toasty.info( getApplicationContext(), "Clicked", Toast.LENGTH_SHORT, true ).show();
 				Intent intent = new Intent( getApplicationContext(), SelectPlaceActivity.class );
+				Cache.set( CacheKeys.ADD_PLACE, true );
 				Cache.set( CacheKeys.ONLY_SHOW_MARKERS, false );
 				startActivity( intent );
 			}
@@ -121,6 +122,7 @@ public class ListPlacesActivity extends AppCompatActivity implements AdapterView
 		if( bSeeLocationInWorld ){
 			Cache.set( CacheKeys.ONLY_SHOW_MARKERS, true );
 			Cache.set( CacheKeys.FIXED_LOCATION, place );
+			Cache.set( CacheKeys.ZOOM_PLACE, true );
 			intent = new Intent( ListPlacesActivity.this, SelectPlaceActivity.class );
 		}
 		else{
