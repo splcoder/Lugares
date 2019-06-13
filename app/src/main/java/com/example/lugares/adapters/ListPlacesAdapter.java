@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.lugares.R;
 import com.example.lugares.activities.ListPlacesActivity;
 import com.example.lugares.activities.SetPlaceDataActivity;
+import com.example.lugares.data.CacheKeys;
 import com.example.lugares.data.Place;
 import com.example.lugares.data.SortById;
 import com.example.lugares.helpers.system.Cache;
@@ -51,7 +52,7 @@ public class ListPlacesAdapter extends ArrayAdapter<Place> {
 		imgMod.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Cache.set( "modPlace", place );
+				Cache.set( CacheKeys.MODIFY_PLACE, place );
 				Intent intent = new Intent( context, SetPlaceDataActivity.class);
 				context.startActivity( intent );
 			}

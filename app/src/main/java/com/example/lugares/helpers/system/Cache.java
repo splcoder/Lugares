@@ -36,13 +36,72 @@ public class Cache {
 		return getCache().mapCache.get( key );
 	}
 	/**
-	 * Cache map delete entry
+	 * Cache map get and delete entry
 	 * @param key
 	 * @return Object
 	 */
 	public static Object del( String key ){
 		return getCache().mapCache.remove( key );
 	}
+
 	//----------------------------------------------------------------------------------------------
 	// Another vars/functions
+	//----------------------------------------------------------------------------------------------
+
+	/**
+	 * Get a boolean (basic type)
+	 * @param key
+	 * @param default_value
+	 * @return
+	 */
+	public static boolean getBoolean( String key, boolean default_value ){
+		try{
+			default_value = (boolean)getCache().mapCache.get( key );
+		} catch( Exception e ){}
+		return default_value;
+	}
+	public static boolean delBoolean( String key, boolean default_value ){
+		try{
+			default_value = (boolean)getCache().mapCache.remove( key );
+		} catch( Exception e ){}
+		return default_value;
+	}
+
+	/**
+	 * Get a long (basic type)
+	 * @param key
+	 * @param default_value
+	 * @return
+	 */
+	public static long getLong( String key, long default_value ){
+		try{
+			default_value = (long)getCache().mapCache.get( key );
+		} catch( Exception e ){}
+		return default_value;
+	}
+	public static long delLong( String key, long default_value ){
+		try{
+			default_value = (long)getCache().mapCache.remove( key );
+		} catch( Exception e ){}
+		return default_value;
+	}
+
+	/**
+	 * Get a double (basic type)
+	 * @param key
+	 * @param default_value
+	 * @return
+	 */
+	public static double getDouble( String key, double default_value ){
+		try{
+			default_value = (double)getCache().mapCache.get( key );
+		} catch( Exception e ){}
+		return default_value;
+	}
+	public static double delDouble( String key, double default_value ){
+		try{
+			default_value = (double)getCache().mapCache.remove( key );
+		} catch( Exception e ){}
+		return default_value;
+	}
 }

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.lugares.R;
 import com.example.lugares.adapters.ListPlacesAdapter;
+import com.example.lugares.data.CacheKeys;
 import com.example.lugares.data.Place;
 import com.example.lugares.helpers.system.Cache;
 import com.google.android.gms.maps.model.LatLng;
@@ -43,14 +44,14 @@ public class ListPlacesActivity extends AppCompatActivity implements AdapterView
 		aPlaces.add( place );
 		listPlacesAdapter.notifyDataSetChanged();
 	}
-	public void updateListPlacesAdapter(){ listPlacesAdapter.notifyDataSetChanged(); }	// See required: Cache.set( "ListPlacesActivity", that );
+	public void updateListPlacesAdapter(){ listPlacesAdapter.notifyDataSetChanged(); }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_places);
 
-		Cache.set( "ListPlacesActivity", that );
+		Cache.set( CacheKeys.LIST_PLACES_ACTIVITY, that );	// <<< Required !
 
 		listPlaces = findViewById( R.id.listPlaces );
 		btnAdd = findViewById( R.id.btnAdd );
@@ -78,9 +79,7 @@ public class ListPlacesActivity extends AppCompatActivity implements AdapterView
 			public void onClick(View v) {
 				//Toasty.info( getApplicationContext(), "Clicked", Toast.LENGTH_SHORT, true ).show();
 				Intent intent = new Intent( getApplicationContext(), SelectPlaceActivity.class );
-				//Cache.set( "ListPlacesActivity", this );	// <<< Gives ERROR !!!
-				Cache.set( "ListPlacesActivity", that );
-				Cache.set( "onlyShowMarkers", false );
+				Cache.set( CacheKeys.ONLY_SHOW_MARKERS, false );
 				startActivity( intent );
 			}
 		});
@@ -103,9 +102,8 @@ public class ListPlacesActivity extends AppCompatActivity implements AdapterView
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent( getApplicationContext(), SelectPlaceActivity.class );
-				//Cache.set( "ListPlacesActivity", this );	// <<< Gives ERROR !!!
-				Cache.set( "ListPlacesActivity", that );
-				Cache.set( "onlyShowMarkers", true );
+				Cache.set( CacheKeys.ONLY_SHOW_MARKERS, true );
+				Cache.set( CacheKeys.ALL_PLACES_EQUAL, true );
 				startActivity( intent );
 			}
 		});
@@ -121,13 +119,12 @@ public class ListPlacesActivity extends AppCompatActivity implements AdapterView
 		//Toasty.success( getApplicationContext(), place.getName(), Toast.LENGTH_SHORT, true ).show();
 		Intent intent = null;
 		if( bSeeLocationInWorld ){
-			Cache.set( "ListPlacesActivity", that );
-			Cache.set( "onlyShowMarkers", true );
-			Cache.set( "fixLocation", place.getLatLong() );
+			Cache.set( CacheKeys.ONLY_SHOW_MARKERS, true );
+			Cache.set( CacheKeys.FIXED_LOCATION, place );
 			intent = new Intent( ListPlacesActivity.this, SelectPlaceActivity.class );
 		}
 		else{
-			Cache.set( "street_latLong", place.getLatLong() );
+			Cache.set( CacheKeys.STREET_LAT_LONG, place.getLatLong() );
 			intent = new Intent( ListPlacesActivity.this, StreetActivity.class );
 		}
 		startActivity( intent );

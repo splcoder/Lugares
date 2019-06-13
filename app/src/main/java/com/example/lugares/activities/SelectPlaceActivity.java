@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.lugares.R;
+import com.example.lugares.data.CacheKeys;
 import com.example.lugares.data.Place;
 import com.example.lugares.helpers.system.Cache;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,7 +37,8 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 	LatLng latLngSelected = null;
 
 	boolean onlyShowMarkers = false;
-	LatLng fixedLatLong = null;
+	boolean allPlacesEqual = false;
+	Place fixedPlace = null;
 
 	@SuppressLint("RestrictedApi")
 	@Override
@@ -53,7 +55,7 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 					return;
 				}
 				// Set the data of this place
-				Cache.set( "place_selected", latLngSelected );
+				Cache.set( CacheKeys.PLACE_SELECTED, latLngSelected );
 				Intent intent = new Intent( SelectPlaceActivity.this, SetPlaceDataActivity.class );
 				startActivity( intent );
 				finish();
@@ -63,14 +65,15 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 		// Obtain the SupportMapFragment and get notified when the map is ready to be used.
 		SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.map);
-		mapFragment.getMapAsync(this);
+		mapFragment.getMapAsync(this );
 
-		listPlacesActivity = (ListPlacesActivity)Cache.get( "ListPlacesActivity" );
-		onlyShowMarkers = (boolean)Cache.get( "onlyShowMarkers" );
+		listPlacesActivity = (ListPlacesActivity)Cache.get( CacheKeys.LIST_PLACES_ACTIVITY );
+		onlyShowMarkers = Cache.getBoolean( CacheKeys.ONLY_SHOW_MARKERS, false );
 		if( onlyShowMarkers ){
 			btnAddSelected.setVisibility( View.GONE );
 		}
-		fixedLatLong = (LatLng)Cache.get( "fixLocation" );
+		allPlacesEqual = Cache.delBoolean( CacheKeys.ALL_PLACES_EQUAL, false );	// <<< get and del
+		fixedPlace = (Place)Cache.get( CacheKeys.FIXED_LOCATION );
 	}
 
 
@@ -103,19 +106,26 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 
 		// Set the markers known
 		ArrayList<Place> aPlaces = listPlacesActivity.getPlaces();
+		Marker marker;
 		for( Place place : aPlaces ){
-			mMap.addMarker( new MarkerOptions()
+			marker = mMap.addMarker( new MarkerOptions()
 					.position( new LatLng( place.getLatitude(), place.getLongitude() ) )
 					.draggable( false )
 					.title( place.getName() )
 					.snippet( place.getDescription() )
-					.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) )
+					//.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) )
 			);
+			if( ! allPlacesEqual && fixedPlace != null && fixedPlace.getId() == place.getId() )
+					marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_ORANGE ) );
+			else	marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
 		}
 
-		if( fixedLatLong != null ){
-			//mMap.moveCamera( CameraUpdateFactory.newLatLng( fixedLatLong ) );
-			mMap.animateCamera( CameraUpdateFactory.newLatLngZoom( fixedLatLong, 13.0f ) );
+		if( fixedPlace != null ){
+			if( onlyShowMarkers )
+					mMap.animateCamera( CameraUpdateFactory.newLatLng( fixedPlace.getLatLong() ) );
+			else	mMap.animateCamera( CameraUpdateFactory.newLatLngZoom( fixedPlace.getLatLong(), 13.0f ) );
+			// Clean
+			//fixedPlace = null;
 		}
 		else{
 			LatLng donosti = new LatLng(43.327929, -1.959019 );
@@ -145,7 +155,7 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 	public void onInfoWindowClick(Marker marker) {
 		Toasty.info( getApplicationContext(), marker.getTitle(), Toast.LENGTH_SHORT, true ).show();
 		Intent intent = new Intent( SelectPlaceActivity.this, StreetActivity.class );
-		Cache.set( "street_latLong", marker.getPosition() );
+		Cache.set( CacheKeys.STREET_LAT_LONG, marker.getPosition() );
 		startActivity( intent );
 	}
 
