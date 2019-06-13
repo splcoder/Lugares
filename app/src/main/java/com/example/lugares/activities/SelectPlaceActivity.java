@@ -36,6 +36,7 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 	LatLng latLngSelected = null;
 
 	boolean onlyShowMarkers = false;
+	LatLng fixedLatLong = null;
 
 	@SuppressLint("RestrictedApi")
 	@Override
@@ -69,6 +70,7 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 		if( onlyShowMarkers ){
 			btnAddSelected.setVisibility( View.GONE );
 		}
+		fixedLatLong = (LatLng)Cache.get( "fixLocation" );
 	}
 
 
@@ -111,9 +113,15 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 			);
 		}
 
-		LatLng donosti = new LatLng(43.327929, -1.959019 );
-		//mMap.addMarker( new MarkerOptions().position( donosti ).title( "My Marker" ) );
-		mMap.moveCamera( CameraUpdateFactory.newLatLng( donosti ) );
+		if( fixedLatLong != null ){
+			//mMap.moveCamera( CameraUpdateFactory.newLatLng( fixedLatLong ) );
+			mMap.animateCamera( CameraUpdateFactory.newLatLngZoom( fixedLatLong, 13.0f ) );
+		}
+		else{
+			LatLng donosti = new LatLng(43.327929, -1.959019 );
+			//mMap.addMarker( new MarkerOptions().position( donosti ).title( "My Marker" ) );
+			mMap.moveCamera( CameraUpdateFactory.newLatLng( donosti ) );
+		}
 	}
 
 	@Override

@@ -31,7 +31,10 @@ public class ListPlacesActivity extends AppCompatActivity implements AdapterView
 
 	ListView listPlaces;
 	FloatingActionButton btnAdd;
+	FloatingActionButton btnMode;
 	FloatingActionButton btnShowMarkers;
+
+	boolean bSeeLocationInWorld = false;
 
 	public ArrayList<Place> getPlaces(){ return aPlaces; }
 	public void addNewPlace( LatLng latLngSelected, String name, String description, int valoration ){
@@ -48,7 +51,13 @@ public class ListPlacesActivity extends AppCompatActivity implements AdapterView
 
 		listPlaces = findViewById( R.id.listPlaces );
 		btnAdd = findViewById( R.id.btnAdd );
+		btnMode = findViewById( R.id.btnMode );
 		btnShowMarkers = findViewById( R.id.btnShowMarkers );
+
+		//View header = getLayoutInflater().inflate( R.layout.header, null );
+		View footer = getLayoutInflater().inflate( R.layout.list_places_footer, null );
+		//listPlaces.addHeaderView( header );
+		listPlaces.addFooterView( footer );
 
 		// First set the context <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		Place.dataManager.setContext( getApplicationContext() );
@@ -73,6 +82,20 @@ public class ListPlacesActivity extends AppCompatActivity implements AdapterView
 			}
 		});
 
+		btnMode.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if( bSeeLocationInWorld ){
+					bSeeLocationInWorld = false;
+					btnMode.setImageResource( android.R.drawable.ic_menu_view );
+				}
+				else{
+					bSeeLocationInWorld = true;
+					btnMode.setImageResource( android.R.drawable.ic_menu_mapmode );
+				}
+			}
+		});
+
 		btnShowMarkers.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -93,8 +116,17 @@ public class ListPlacesActivity extends AppCompatActivity implements AdapterView
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Place place = aPlaces.get( position );
 		//Toasty.success( getApplicationContext(), place.getName(), Toast.LENGTH_SHORT, true ).show();
-		Cache.set( "street_latLong", place.getLatLong() );
-		Intent intent = new Intent( ListPlacesActivity.this, StreetActivity.class );
+		Intent intent = null;
+		if( bSeeLocationInWorld ){
+			Cache.set( "ListPlacesActivity", that );
+			Cache.set( "onlyShowMarkers", true );
+			Cache.set( "fixLocation", place.getLatLong() );
+			intent = new Intent( ListPlacesActivity.this, SelectPlaceActivity.class );
+		}
+		else{
+			Cache.set( "street_latLong", place.getLatLong() );
+			intent = new Intent( ListPlacesActivity.this, StreetActivity.class );
+		}
 		startActivity( intent );
 	}
 

@@ -27,6 +27,18 @@
 		app:srcCompat="@android:drawable/ic_input_add" />
 
 	<android.support.design.widget.FloatingActionButton
+		android:id="@+id/btnMode"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="112dp"
+		android:layout_marginBottom="8dp"
+		android:backgroundTint="@color/blue"
+		android:clickable="true"
+		app:layout_constraintBottom_toBottomOf="@+id/listPlaces"
+		app:layout_constraintEnd_toStartOf="@+id/btnShowMarkers"
+		app:srcCompat="@android:drawable/ic_menu_view" />
+
+	<android.support.design.widget.FloatingActionButton
 		android:id="@+id/btnShowMarkers"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

@@ -11,8 +11,10 @@ import android.widget.TextView;
 
 import com.example.lugares.R;
 import com.example.lugares.data.Place;
+import com.example.lugares.data.SortById;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ListPlacesAdapter extends ArrayAdapter<Place> {
 	private ArrayList<Place> listPlaces;
@@ -23,6 +25,8 @@ public class ListPlacesAdapter extends ArrayAdapter<Place> {
 		super( context, R.layout.activity_list_places, listPlaces );
 		this.listPlaces = listPlaces;
 		this.context = context;
+
+		Collections.sort( this.listPlaces, new SortById() );
 	}
 
 	@Override
