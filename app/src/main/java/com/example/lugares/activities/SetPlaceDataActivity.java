@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 
 import com.example.lugares.R;
+import com.example.lugares.data.Place;
 import com.example.lugares.helpers.system.Cache;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -22,6 +23,8 @@ public class SetPlaceDataActivity extends AppCompatActivity {
 	Button btnCreate;
 	Button btnCancel;
 
+	Place place = null;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,6 +32,7 @@ public class SetPlaceDataActivity extends AppCompatActivity {
 
 		listPlacesActivity = (ListPlacesActivity) Cache.get( "ListPlacesActivity" );
 		latLngSelected = (LatLng)Cache.get( "place_selected" );
+		place = (Place)Cache.get( "modPlace" );
 
 		txtName = findViewById( R.id.txtName );
 		txtDescription = findViewById( R.id.txtDescription );
@@ -48,10 +52,24 @@ public class SetPlaceDataActivity extends AppCompatActivity {
 			public void onClick(View v) {
 				String name = txtName.getText().toString();
 				String description = txtDescription.getText().toString();
-				int valoration = (int)rbValoration.getRating();
-				listPlacesActivity.addNewPlace( latLngSelected, name, description, valoration );
+				float valoration = rbValoration.getRating();
+				if( place != null ){
+					place.setName( name );
+					place.setDescription( description );
+					place.setValoration( valoration );
+					listPlacesActivity.updateListPlacesAdapter();	// <<< required: Cache.set( "ListPlacesActivity", that );	<<< in ListPlacesActivity.onCreate
+				}
+				else	listPlacesActivity.addNewPlace( latLngSelected, name, description, valoration );
 				finish();
 			}
 		});
+
+		if( place != null ){
+			txtName.setText( place.getName() );
+			txtDescription.setText( place.getDescription() );
+			rbValoration.setRating( place.getValoration() );
+
+			btnCreate.setText( "Modify" );
+		}
 	}
 }

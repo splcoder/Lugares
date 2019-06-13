@@ -1,17 +1,22 @@
 package com.example.lugares.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.lugares.R;
+import com.example.lugares.activities.ListPlacesActivity;
+import com.example.lugares.activities.SetPlaceDataActivity;
 import com.example.lugares.data.Place;
 import com.example.lugares.data.SortById;
+import com.example.lugares.helpers.system.Cache;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +37,7 @@ public class ListPlacesAdapter extends ArrayAdapter<Place> {
 	@Override
 	public View getView( int position, View convertView, ViewGroup parent ){
 		// Get the data item for this position
-		Place place = getItem( position );
+		final Place place = getItem( position );
 		// Check if an existing view is being reused, otherwise inflate the view
 		if( convertView == null ){
 			convertView = LayoutInflater.from( getContext() ).inflate( R.layout.item_place, parent,false );
@@ -41,6 +46,16 @@ public class ListPlacesAdapter extends ArrayAdapter<Place> {
 		TextView txtName = (TextView)convertView.findViewById( R.id.txtName );
 		TextView txtDescription = (TextView)convertView.findViewById( R.id.txtDescription );
 		RatingBar rbValoration = (RatingBar)convertView.findViewById( R.id.rbValoration );
+		ImageView imgMod = (ImageView)convertView.findViewById( R.id.imgMod );
+
+		imgMod.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Cache.set( "modPlace", place );
+				Intent intent = new Intent( context, SetPlaceDataActivity.class);
+				context.startActivity( intent );
+			}
+		});
 
 		// TODO background color
 		//txtName.setBackgroundTintList( this.context.getResources().getColorStateList( R.color. ) );

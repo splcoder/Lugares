@@ -37,17 +37,20 @@ public class ListPlacesActivity extends AppCompatActivity implements AdapterView
 	boolean bSeeLocationInWorld = false;
 
 	public ArrayList<Place> getPlaces(){ return aPlaces; }
-	public void addNewPlace( LatLng latLngSelected, String name, String description, int valoration ){
+	public void addNewPlace( LatLng latLngSelected, String name, String description, float valoration ){
 		Place place = new Place( name, description, latLngSelected.latitude, latLngSelected.longitude, valoration );
 		mapPlaces.put( place.getId(), place );
 		aPlaces.add( place );
 		listPlacesAdapter.notifyDataSetChanged();
 	}
+	public void updateListPlacesAdapter(){ listPlacesAdapter.notifyDataSetChanged(); }	// See required: Cache.set( "ListPlacesActivity", that );
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_places);
+
+		Cache.set( "ListPlacesActivity", that );
 
 		listPlaces = findViewById( R.id.listPlaces );
 		btnAdd = findViewById( R.id.btnAdd );
