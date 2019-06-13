@@ -34,7 +34,7 @@
 			android:label="@string/title_activity_street"></activity>
 		<activity android:name=".activities.SetPlaceDataActivity" />
 		<activity
-			android:name=".SelectPlaceActivity"
+			android:name=".activities.SelectPlaceActivity"
 			android:label="@string/title_activity_select_place" />
 		<activity android:name=".activities.ListPlacesActivity" />
 		<activity android:name=".activities.MainActivity">

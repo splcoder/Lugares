@@ -12,7 +12,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.lugares.R;
-import com.example.lugares.SelectPlaceActivity;
 import com.example.lugares.adapters.ListPlacesAdapter;
 import com.example.lugares.data.Place;
 import com.example.lugares.helpers.system.Cache;
@@ -32,6 +31,7 @@ public class ListPlacesActivity extends AppCompatActivity implements AdapterView
 
 	ListView listPlaces;
 	FloatingActionButton btnAdd;
+	FloatingActionButton btnShowMarkers;
 
 	public ArrayList<Place> getPlaces(){ return aPlaces; }
 	public void addNewPlace( LatLng latLngSelected, String name, String description, int valoration ){
@@ -48,6 +48,7 @@ public class ListPlacesActivity extends AppCompatActivity implements AdapterView
 
 		listPlaces = findViewById( R.id.listPlaces );
 		btnAdd = findViewById( R.id.btnAdd );
+		btnShowMarkers = findViewById( R.id.btnShowMarkers );
 
 		// First set the context <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		Place.dataManager.setContext( getApplicationContext() );
@@ -67,6 +68,18 @@ public class ListPlacesActivity extends AppCompatActivity implements AdapterView
 				Intent intent = new Intent( getApplicationContext(), SelectPlaceActivity.class );
 				//Cache.set( "ListPlacesActivity", this );	// <<< Gives ERROR !!!
 				Cache.set( "ListPlacesActivity", that );
+				Cache.set( "onlyShowMarkers", false );
+				startActivity( intent );
+			}
+		});
+
+		btnShowMarkers.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent( getApplicationContext(), SelectPlaceActivity.class );
+				//Cache.set( "ListPlacesActivity", this );	// <<< Gives ERROR !!!
+				Cache.set( "ListPlacesActivity", that );
+				Cache.set( "onlyShowMarkers", true );
 				startActivity( intent );
 			}
 		});

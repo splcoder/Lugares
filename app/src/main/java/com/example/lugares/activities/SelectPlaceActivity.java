@@ -1,15 +1,15 @@
-package com.example.lugares;
+package com.example.lugares.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.lugares.activities.ListPlacesActivity;
-import com.example.lugares.activities.SetPlaceDataActivity;
+import com.example.lugares.R;
 import com.example.lugares.data.Place;
 import com.example.lugares.helpers.system.Cache;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,6 +35,9 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 	Marker markerSelected = null;
 	LatLng latLngSelected = null;
 
+	boolean onlyShowMarkers = false;
+
+	@SuppressLint("RestrictedApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -62,6 +65,10 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 		mapFragment.getMapAsync(this);
 
 		listPlacesActivity = (ListPlacesActivity)Cache.get( "ListPlacesActivity" );
+		onlyShowMarkers = (boolean)Cache.get( "onlyShowMarkers" );
+		if( onlyShowMarkers ){
+			btnAddSelected.setVisibility( View.GONE );
+		}
 	}
 
 
@@ -112,26 +119,31 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 	@Override
 	public void onMapClick(LatLng latLng) {
 		//Toasty.info( getApplicationContext(), "Clicked on map", Toast.LENGTH_SHORT, true ).show();
-		if( markerSelected != null )	markerSelected.remove();
-		markerSelected = mMap.addMarker( new MarkerOptions()
-				.position( latLng )
-				.draggable( true )
-				.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_RED ) )
-		);
-		//mMap.moveCamera(CameraUpdateFactory.newLatLng( latLng ) );
-		mMap.animateCamera( CameraUpdateFactory.newLatLng( latLng ) );
-		//
-		latLngSelected = latLng;	// <<< remind onMarkerDragEnd
+		if( ! onlyShowMarkers ){
+			if( markerSelected != null )	markerSelected.remove();
+			markerSelected = mMap.addMarker( new MarkerOptions()
+					.position( latLng )
+					.draggable( true )
+					.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_RED ) )
+			);
+			//mMap.moveCamera(CameraUpdateFactory.newLatLng( latLng ) );
+			mMap.animateCamera( CameraUpdateFactory.newLatLng( latLng ) );
+			//
+			latLngSelected = latLng;	// <<< remind onMarkerDragEnd
+		}
 	}
 
 	@Override
 	public void onInfoWindowClick(Marker marker) {
-
+		Toasty.info( getApplicationContext(), marker.getTitle(), Toast.LENGTH_SHORT, true ).show();
+		Intent intent = new Intent( SelectPlaceActivity.this, StreetActivity.class );
+		Cache.set( "street_latLong", marker.getPosition() );
+		startActivity( intent );
 	}
 
 	@Override
 	public void onMarkerDragStart(Marker marker) {
-
+		marker.hideInfoWindow();
 	}
 
 	@Override
@@ -140,7 +152,11 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 	}
 
 	@Override
-	public void onMarkerDragEnd(Marker marker) {
+	public void onMarkerDragEnd(Marker marker ) {
 		latLngSelected = marker.getPosition();
+
+		//LatLng latLng = marker.getPosition();
+		//marker.setSnippet( "Pos: " + latLng.latitude + ", " + latLng.longitude );
+		marker.showInfoWindow();
 	}
 }
