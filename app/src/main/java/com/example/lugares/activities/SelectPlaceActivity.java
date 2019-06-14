@@ -33,6 +33,7 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 	FloatingActionButton btnAddSelected;
 
 	ListPlacesActivity listPlacesActivity;
+
 	Marker markerSelected = null;
 	LatLng latLngSelected = null;
 
@@ -41,6 +42,7 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 	boolean allPlacesEqual = false;
 	boolean zoomPlace = false;
 	Place fixedPlace = null;
+	boolean modifyPlaceLocation = false;
 
 	@SuppressLint("RestrictedApi")
 	@Override
@@ -58,8 +60,10 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 				}
 				// Set the data of this place
 				Cache.set( CacheKeys.PLACE_SELECTED, latLngSelected );
-				Intent intent = new Intent( SelectPlaceActivity.this, SetPlaceDataActivity.class );
-				startActivity( intent );
+				if( addPlace ){
+					Intent intent = new Intent( SelectPlaceActivity.this, SetPlaceDataActivity.class );
+					startActivity( intent );
+				}
 				finish();
 			}
 		});
@@ -69,15 +73,18 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 				.findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this );
 
-		addPlace = Cache.delBoolean( CacheKeys.ADD_PLACE, false );		// get and del
-		zoomPlace = Cache.delBoolean( CacheKeys.ZOOM_PLACE, false );	// get and del
 		listPlacesActivity = (ListPlacesActivity)Cache.get( CacheKeys.LIST_PLACES_ACTIVITY );
-		onlyShowMarkers = Cache.getBoolean( CacheKeys.ONLY_SHOW_MARKERS, false );
-		if( onlyShowMarkers ){
-			btnAddSelected.setVisibility( View.GONE );
-		}
+		addPlace = Cache.delBoolean( CacheKeys.ADD_PLACE, false );		// get and del
+		modifyPlaceLocation = Cache.delBoolean( CacheKeys.MODIFY_PLACE_LOCATION, false );		// get and del
+		zoomPlace = Cache.delBoolean( CacheKeys.ZOOM_PLACE, false );	// get and del
+		onlyShowMarkers = Cache.delBoolean( CacheKeys.ONLY_SHOW_MARKERS, false );
 		allPlacesEqual = Cache.delBoolean( CacheKeys.ALL_PLACES_EQUAL, false );	// <<< get and del
 		fixedPlace = (Place)Cache.get( CacheKeys.FIXED_LOCATION );
+
+		if( addPlace || modifyPlaceLocation ){
+			btnAddSelected.setVisibility( View.VISIBLE );
+		}
+		//if( modifyPlaceLocation )	btnAddSelected.setTooltipText( "Mod" );
 	}
 
 
@@ -122,13 +129,17 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 			if( ! addPlace && ! allPlacesEqual && fixedPlace != null && fixedPlace.getId() == place.getId() ){
 				marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_ORANGE ) );
 				marker.showInfoWindow();
+				if( modifyPlaceLocation ){
+					marker.setDraggable( true );
+					marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_YELLOW ) );
+					markerSelected = marker;
+				}
 			}
 			else	marker.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_BLUE ) );
 		}
 
 		if( fixedPlace != null ){
-			// TODO zoomPlace
-			if( onlyShowMarkers || addPlace )
+			if( (onlyShowMarkers || addPlace) && ! zoomPlace )
 					mMap.animateCamera( CameraUpdateFactory.newLatLng( fixedPlace.getLatLong() ) );
 			else	mMap.animateCamera( CameraUpdateFactory.newLatLngZoom( fixedPlace.getLatLong(), 13.0f ) );
 			// Clean
@@ -144,13 +155,14 @@ public class SelectPlaceActivity extends AppCompatActivity implements OnMapReady
 	@Override
 	public void onMapClick(LatLng latLng) {
 		//Toasty.info( getApplicationContext(), "Clicked on map", Toast.LENGTH_SHORT, true ).show();
-		if( addPlace ){
+		if( addPlace || modifyPlaceLocation ){
 			if( markerSelected != null )	markerSelected.remove();
 			markerSelected = mMap.addMarker( new MarkerOptions()
 					.position( latLng )
 					.draggable( true )
 					.icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_RED ) )
 			);
+			if( modifyPlaceLocation )	markerSelected.setIcon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory.HUE_YELLOW ) );
 			//mMap.moveCamera(CameraUpdateFactory.newLatLng( latLng ) );
 			mMap.animateCamera( CameraUpdateFactory.newLatLng( latLng ) );
 			//
