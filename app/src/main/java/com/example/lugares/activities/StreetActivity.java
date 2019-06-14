@@ -4,6 +4,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
 import com.example.lugares.R;
+import com.example.lugares.data.CacheKeys;
 import com.example.lugares.helpers.system.Cache;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -36,7 +37,7 @@ public class StreetActivity extends FragmentActivity implements OnStreetViewPano
 	public void onStreetViewPanoramaReady(StreetViewPanorama streetViewPanorama) {
 		this.streetViewPanorama = streetViewPanorama;
 
-		LatLng coord = (LatLng) Cache.get( "street_latLong" );
+		LatLng coord = (LatLng) Cache.get( CacheKeys.STREET_LAT_LONG );
 		streetViewPanorama.setPosition( coord );
 	}
 }
