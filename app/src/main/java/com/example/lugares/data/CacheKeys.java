@@ -11,4 +11,5 @@ public class CacheKeys {
 	public static final String ADD_PLACE				= "add_place";
 	public static final String ZOOM_PLACE				= "zoom_place";
 	public static final String MODIFY_PLACE_LOCATION	= "modify_place_location";
+	// TODO clean the code
 }
